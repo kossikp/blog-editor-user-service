@@ -1,0 +1,19 @@
+{
+  "name": "blog-editor-user-service",
+  "version": "1.0.0",
+  "description": "Blog Editor - User Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kossikp/blog-editor-user-service.git"
+  },
+  "author": "Kossi A. Kponvi <kossi.a.kponvi@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kossikp/blog-editor-user-service/issues"
+  },
+  "homepage": "https://github.com/kossikp/blog-editor-user-service#readme"
+}
