@@ -3,25 +3,34 @@ const env = process.env.NODE_ENV || 'dev';
 dotenv.config({ path: `.env.${env}` });
 const http = require('http');
 const cors = require('cors');
+const redis= require('redis');
 const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
+const moment  = require('moment');
 const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
+const { RedisStore } = require('connect-redis');
 
 const config = require('./config');
 const userRoutes = require('./routes');
+const redisClient = require('./redisClient');
 
 const app = express();
+
+let redisStore = new RedisStore({
+    client: redisClient,
+    prefix: 'blog-editor-user-service:'
+});
 
 let sessionOptions = {
     secret: config.USER_SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 3600 },
-    store: MongoStore.create({ mongoUrl: `${config.env.mongoUrl}` })
+    cookie: { maxAge: 3600000 },
+    store: redisStore
 };
 
 app.server = http.createServer(app);
@@ -30,9 +39,11 @@ app.server = http.createServer(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: config.bodyLimit }));
 
-// cookie and morgan
+// cookie
 app.use(cookieParser());
-if (app.get('env') !== 'test') {
+
+// Logging (except in testing environment)
+if (app.get('env') !== 'testing') {
     app.use(morgan('combined'));
 }
 
@@ -44,13 +55,6 @@ app.use((req, res, next) => {
     next()
 });
 
-// Session middleware
-if (app.get('env') === 'production') {
-    app.set('Trust proxy', 1);
-    sessionOptions.cookie.secure = true;
-} else {
-    sessionOptions.cookie.secure = false;
-}
 app.use(session(sessionOptions));
 app.use((req, res, next) => {
     res.locals.session = req.session;
@@ -138,11 +142,16 @@ app.use(passport.session());
 
 require('./middleware/passport')(passport);
 
-// db connection
+// Mongodb connection
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error: '));
 db.once('open', function callback() {
     console.log(`Successfully connected to MongoDB on ${config.env.envName} server!`);
+});
+
+// Redis connection
+redisClient.connect().then(() => {
+    console.log(`Successfully connected to Redis on ${config.env.envName} server!`)
 });
 
 // routes

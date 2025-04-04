@@ -1,7 +1,6 @@
 require('dotenv').config();
-const bcrypt = require('bcryptjs');
-const validator = require('validator');
-const randomstring = require('randomstring');
+const bcryptJs = require('bcryptjs');
+const config = require('../config');
 
 const isEmpty = value =>
     value === null ||
@@ -20,31 +19,45 @@ const hasEmptyKey = obj => {
     return false;
 }
 
+const generateHashPassword = async password => {
+    const salt = await bcryptJs.genSaltSync(config.SALT);
+    const hash = await bcryptJs.hashSync(password, salt);
+    return hash;
+}
+
 const whichEnv = () => {
     let environments = {};
 
     environments.dev = {
         'envName': 'dev',
         'port': process.env.PORT || 4000,
-        'mongoUrl': process.env.MONGODB_URL,
+        'redisHost': process.env.REDIS_HOST,
+        'redisPort': process.env.REDIS_PORT,
+        'mongodbUrl': process.env.MONGODB_URL,
     };
 
     environments.testing = {
         'envName': 'testing',
         'port': process.env.PORT || 4001,
-        'mongoUrl': process.env.MONGODB_URL,
+        'redisHost': process.env.REDIS_HOST,
+        'redisPort': process.env.REDIS_PORT,
+        'mongodbUrl': process.env.MONGODB_URL,
     };
     
     environments.staging = {
         'envName': 'staging',
-        'port': process.env.PORT || 4002,
-        'mongoUrl': process.env.MONGODB_URL,
+        'port': process.env.MONGODB_PORT || 4002,
+        'redisHost': process.env.REDIS_HOST,
+        'redisPort': process.env.REDIS_PORT,
+        'mongodbUrl': process.env.MONGODB_URL,
     };
 
     environments.prod = {
         'envName': 'prod',
         'port': process.env.PORT || 4003,
-        'mongoUrl': process.env.MONGODB_URL,
+        'redisHost': process.env.REDIS_HOST,
+        'redisPort': process.env.REDIS_PORT,
+        'mongodbUrl': process.env.MONGODB_URL,
     };
    
     let currentEnvironment = typeof(process.env.NODE_ENV) == 'string' ? process.env.NODE_ENV.toLowerCase() : '';
@@ -57,4 +70,5 @@ module.exports = {
     isEmpty,
     whichEnv,
     hasEmptyKey,
+    generateHashPassword
 }
