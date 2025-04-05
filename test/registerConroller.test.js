@@ -3,7 +3,6 @@ const chaiHttp = require('chai-http');
 
 const app = require('../index');
 const { User } = require('../models/User');
-const { user, createUser } = require('./testUtils');
 
 chai.use(chaiHttp);
 chai.config.includeStack = true;

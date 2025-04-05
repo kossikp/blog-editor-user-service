@@ -31,25 +31,12 @@ module.exports = ({ config, db }) => {
                 password: hash
             });
 
-            const payload = {
-                id: user._id,
-                email: user.email
-            };
-
-            jwt.sign(
-                payload,
-                config.USER_REGISTRATION_SECRET,
-                {},
-                async (err, token) => {
-                    if (err) return res.status(500).json({ success: false, error: err.message });
-                    await user.save();
-                    res.status(200).json({
-                        success: true,
-                        data: user,
-                        message: 'User successfully registered!' 
-                    });
-                }
-            );
+            await user.save();
+            res.status(200).json({
+                success: true,
+                data: user,
+                message: 'User successfully registered!'
+            });
         } catch(err) {
             return res.status(500).json({ success: false, error: err.message });
         }

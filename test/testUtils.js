@@ -6,16 +6,9 @@ const user = {
     firstName: 'Test',
     lastName: 'Test',
     email: 'test@example.com',
-    password: 'password'
+    password: 'password',
+    confirmPassword: 'password'
 }
-
-const getSignInData = data => {
-    return {
-        email: data.email,
-        password: data.password
-    };
-}
-
 
 const createUser = async data => {
     const user = await User({
@@ -24,13 +17,10 @@ const createUser = async data => {
         email: data.email,
         password: data.password
     });
-    user.save().then(user => {
-        console.log(`User ${user.firstName} successfully created!`);
-    }).catch(err => console.log(err.message));
+    await user.save();
 }
 
 module.exports = {
     user,
     createUser,
-    getSignInData,
 }
