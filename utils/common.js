@@ -1,6 +1,4 @@
-require('dotenv').config();
-const bcryptJs = require('bcryptjs');
-const config = require('../config');
+const bcrypt = require('bcryptjs');
 
 const isEmpty = value =>
     value === null ||
@@ -20,9 +18,8 @@ const hasEmptyKey = obj => {
 }
 
 const generateHashPassword = async password => {
-    const salt = await bcryptJs.genSaltSync(config.SALT);
-    const hash = await bcryptJs.hashSync(password, salt);
-    return hash;
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
 }
 
 const whichEnv = () => {
@@ -61,9 +58,7 @@ const whichEnv = () => {
     };
    
     let currentEnvironment = typeof(process.env.NODE_ENV) == 'string' ? process.env.NODE_ENV.toLowerCase() : '';
-    let environmentToExport = typeof(environments[currentEnvironment]) == 'object' ? environments[currentEnvironment] : environments.dev;
-
-    return environmentToExport;
+    return typeof (environments[currentEnvironment]) == 'object' ? environments[currentEnvironment] : environments.dev;
 }
 
 module.exports = {

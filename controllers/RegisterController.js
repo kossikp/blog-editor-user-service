@@ -22,13 +22,13 @@ module.exports = ({ config, db }) => {
                 return res.status(409).json({ success: false, errors });
             }
 
-            const hashPassword = generateHashPassword(password);
+            const hash = await generateHashPassword(password);
 
             const user = User({
                 firstName,
                 lastName,
                 email,
-                password: hashPassword
+                password: hash
             });
 
             const payload = {
@@ -40,11 +40,13 @@ module.exports = ({ config, db }) => {
                 payload,
                 config.USER_REGISTRATION_SECRET,
                 {},
-                err => {
+                async (err, token) => {
                     if (err) return res.status(500).json({ success: false, error: err.message });
-                    user.save((err, user) => {
-                        if (err) return res.status(500).json({ success: false, error: err.message });
-                        res.status(200).json({ success: true, data: user, message: 'User successfully registered!' });
+                    await user.save();
+                    res.status(200).json({
+                        success: true,
+                        data: user,
+                        message: 'User successfully registered!' 
                     });
                 }
             );

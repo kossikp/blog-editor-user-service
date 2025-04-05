@@ -6,12 +6,9 @@ const USER_SESSION_SECRET = randomstring.generate({ length: 64, charset: 'alphan
 const USER_SESSION_TOKEN_EXPIRES_IN = 60 * 60 * 0.30; // 1 day
 
 module.exports = {
-    'SALT': 10,
     'bodyLimit': '100kb',
 
     'env': whichEnv(),
-
-    'bodyLimit': '100kb',
 
     'APP_NAME': 'blog-editor-user-service',
 

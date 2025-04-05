@@ -14,7 +14,6 @@ describe('RegisterController.js tests', () => {
 
     beforeEach(done => {
         User.deleteMany({}).then(async () => {
-            await createUser(user);
             done();
         }).catch(err => done(err));
     });
@@ -206,7 +205,7 @@ describe('RegisterController.js tests', () => {
         });
     });
 
-    describe("Register with mismatch 'password' and 'confirm password", () => {
+    describe("Register with mismatch 'password' and 'confirm password'", () => {
         describe('POST /api/v1/users/register', () => {
             it("Should not register when 'password' and 'confirm password' mismatch", done => {
       
@@ -228,6 +227,37 @@ describe('RegisterController.js tests', () => {
                         res.body.should.have.property('success').equal(false);
                         res.body.should.have.property('errors').that.is.an('object');
                         res.body.errors.should.have.property('password').that.equals('Passwords do not match!');
+                        done();
+                    });
+            });
+        });
+    });
+
+    describe("Register when POST data is valid", () => {
+        describe('POST /api/v1/users/register', () => {
+            it("Should register when POST data is valid", done => {
+      
+                const data = {
+                    firstName: 'Test',
+                    lastName: 'Test',
+                    email: 'test@example.com',
+                    password: 'password',
+                    confirmPassword: 'password'
+                };
+
+                chai.request(app)
+                    .post('/api/v1/users/register')
+                    .send(data)
+                    .end((err, res) => {
+                        if (err) done(err);
+                        res.should.have.status(200);
+                        res.body.should.be.an('object');
+                        res.body.should.have.property('success').equal(true);
+                        res.body.should.have.property('message').that.equals('User successfully registered!');
+                        res.body.should.have.property('data').that.is.an('object');
+                        res.body.data.should.have.property('firstName').that.equals(data.firstName);
+                        res.body.data.should.have.property('lastName').that.equals(data.lastName);
+                        res.body.data.should.have.property('email').that.equals(data.email);
                         done();
                     });
             });
