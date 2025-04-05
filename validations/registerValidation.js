@@ -11,17 +11,17 @@ module.exports = data => {
 
     let errors = {};
 
-    if (!validator.isLength(data.firstName, { max: 64 })) errors.firstName = 'First name should be maximum 64 characters';
+    if (!validator.isLength(data.firstName, { max: 64 })) errors.firstName = 'First name should be maximum 64 characters!';
     if (isEmpty(data.firstName)) errors.firstName = 'First name field is required!';
 
-    if (!validator.isLength(data.lastName, { max: 64 })) errors.lastName = 'Last name should be maximum 64 characters';
+    if (!validator.isLength(data.lastName, { max: 64 })) errors.lastName = 'Last name should be maximum 64 characters!';
     if (isEmpty(data.lastName)) errors.lastName = 'Last name field is required!';
 
-    if (!validator.isEmail(data.email)) errors.email = 'Email should be valid and be maximum 128 characters';
-    if (isEmpty(data.email)) errors.email = 'Email field is required';
+    if (!validator.isEmail(data.email)) errors.email = 'Email should be valid and be maximum 128 characters!';
+    if (isEmpty(data.email)) errors.email = 'Email field is required!';
 
-    if (isEmpty(data.password)) errors.password = 'Password field is required';
-    if (isEmpty(data.confirmPassword)) errors.confirmPassword = 'Confirm Password field is required';
+    if (isEmpty(data.password)) errors.password = 'Password field is required!';
+    if (isEmpty(data.confirmPassword)) errors.confirmPassword = 'Confirm Password field is required!';
     if (!validator.equals(data.password, data.confirmPassword)) errors.password = 'Passwords do not match!';
 
     return {

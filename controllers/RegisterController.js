@@ -11,7 +11,7 @@ module.exports = ({ config, db }) => {
     api.post('/', async (req, res) => {
         try {
             const { errors, isValid } = registerValidation(req.body);
-            if (!isValid) return res.status(400).json({ success: false, errors});
+            if (!isValid) return res.status(400).json({ success: false, errors });
 
             const { firstName, lastName, email, password } = req.body;
 
